@@ -38,10 +38,14 @@ import { verifyImageURL } from 'verify-image-url';
     if(!isImage) {
       return res.status(400).send("Invalid image url");
     }
-
+    
     try {
       filteredImage = await filterImageFromURL(imageURL);
-      res.status(200).sendFile(filteredImage);
+      res.status(200).sendFile(filteredImage, err => {
+        if(!err) {
+          deleteLocalFiles([filteredImage]);
+        }
+      });
     }catch(err: any) {
       res.status(422).send(`Unable to process the image, Error: ${err.message}`);
     }
