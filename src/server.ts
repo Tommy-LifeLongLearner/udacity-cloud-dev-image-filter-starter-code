@@ -32,6 +32,9 @@ import { verifyImageURL } from 'verify-image-url';
   /**************************************************************************** */
   app.get( "/filteredimage", async ( req: Request, res: Response ) => {
     const imgURL: string = req.query.image_url;
+    if(!imgURL) {
+      return res.status(400).send("The image url is required for example: ?image_url=https://blog.logrocket.com/wp-content/uploads/2022/12/result-builders-swift.png");
+    }
     let filteredImage: string;
     const { isImage, imageURL } = await verifyImageURL(imgURL);
     // check whether it is an image url or not
