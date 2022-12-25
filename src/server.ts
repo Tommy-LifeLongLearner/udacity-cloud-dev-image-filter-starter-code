@@ -36,9 +36,14 @@ import { verifyImageURL } from 'verify-image-url';
     const { isImage, imageURL } = await verifyImageURL(imgURL);
     // check whether it is an image url or not
     if(!isImage) {
-      res.status(400).send("Invalid image url");
-    }else {
-      res.status(200).send("Valid image but the filter is not implemented yet");
+      return res.status(400).send("Invalid image url");
+    }
+
+    try {
+      filteredImage = await filterImageFromURL(imageURL);
+      res.status(200).sendFile(filteredImage);
+    }catch(err: any) {
+      res.status(422).send(`Unable to process the image, Error: ${err.message}`);
     }
   } );
   //! END @TODO1
