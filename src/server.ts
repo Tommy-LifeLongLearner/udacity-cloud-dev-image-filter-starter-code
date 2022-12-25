@@ -1,6 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { filterImageFromURL, deleteLocalFiles } from './util/util';
+// A package to check if a URL is an image URL or not and also get the valid image link from it
+import { verifyImageURL } from 'verify-image-url';
 
 (async () => {
 
@@ -28,12 +30,22 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-
+  app.get( "/filteredimage", async ( req: Request, res: Response ) => {
+    const imgURL: string = req.query.image_url;
+    let filteredImage: string;
+    const { isImage, imageURL } = await verifyImageURL(imgURL);
+    // check whether it is an image url or not
+    if(!isImage) {
+      res.status(400).send("Invalid image url");
+    }else {
+      res.status(200).send("Valid image but the filter is not implemented yet");
+    }
+  } );
   //! END @TODO1
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: Request, res: Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
